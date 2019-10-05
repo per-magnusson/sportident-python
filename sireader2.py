@@ -24,7 +24,7 @@ Also contains functions to read and modify the configuration of stations.
 The code contains documentation of much of the communication protocol
 used by Sportident stations.
 
-Additions an modifications by Per Magnusson:
+Additions and modifications by Per Magnusson:
 - A few more parts of the SYS_VAL structure were worked out and described.
 - The format of the data when reading out the backup memory was reverse 
   engineered and documented, both for stations in legacy and extended 
