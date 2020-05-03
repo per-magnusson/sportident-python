@@ -498,10 +498,16 @@ class SIReader(object):
 
         found = []
         if sys.platform.startswith('linux'):
-            found = [ os.path.join('/dev', f) for f in os.listdir('/dev') 
-                      if re.match('ttyS.*|ttyUSB.*' if ttyS else 'ttyUSB.*', f) ]
+            found = [os.path.join('/dev', f) for f in os.listdir('/dev')
+                     if re.match('ttyS.*|ttyUSB.*' if ttyS else 'ttyUSB.*', f)]
+        elif sys.platform.startswith('darwin'):
+            with os.scandir('/dev') as it:
+                for entry in it:
+                    # assume that silabs.com CP210x USB to UART bridge is used
+                    if entry.name.startswith('tty.SLAB'):
+                        found.append(os.path.join('/dev', entry.name))
         elif sys.platform.startswith('win'):
-            # Rank ports based on some kind of criteria of how 
+            # Rank ports based on some kind of criteria of how
             # likely they are to be the correct port.
             portname = False
             ports = list(serial.tools.list_ports.comports())
