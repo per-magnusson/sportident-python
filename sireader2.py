@@ -382,6 +382,27 @@ class SIReader(object):
                                  'PTL': 3,
                                  'BC' : 2,
                              },
+                          'pCard':{'CN2': 25,     # Similar to SI9/10 but not identical
+                                  'CN1': 26,
+                                  'CN0': 27,
+                                  'STD': 12,
+                                  'ST' : 14,
+                                  'FTD': 16,
+                                  'FT' : 18,
+                                  'CTD': 8,
+                                  'CT' : 10,
+                                  'LTD': None,
+                                  'LT' : None,
+                                  'RC' : 22,
+                                  'P1' : 176, # Location of Punch 1 I believe
+                                  'PL' : 4,
+                                  'PM' : 20,
+                                  'PTD': 0, # Day of week byte, SI6 and newer
+                                  'CN' : 1,
+                                  'PTH': 2,
+                                  'PTL': 3,
+                                  'BC' : 2,
+                              },
                           'SI10':{'CN2': 25,     # Same data structure for SI11
                                   'CN1': 26,
                                   'CN0': 27,
@@ -1657,7 +1678,7 @@ class SIReaderReadout(SIReader):
                                            SIReader.P_SI6_CB)[1][1:]
             raw_data += self._read_command()[1][1:]
             raw_data += self._read_command()[1][1:]
-        elif self.cardtype in ('SI8', 'SI9'):
+        elif self.cardtype in ('SI8', 'SI9', 'pCard'):
             raw_data = b''
             for b in range(SIReader.CARD[self.cardtype]['BC']):
                 raw_data += self._send_command(SIReader.C_GET_SI9,
@@ -1712,6 +1733,10 @@ class SIReaderReadout(SIReader):
                 self.cardtype = 'SI8'
             elif self.sicard >= 1000000 and self.sicard <= 1999999:
                 self.cardtype = 'SI9'
+            elif self.sicard >= 4000000 and self.sicard <= 4999999:
+                self.cardtype = 'pCard'
+#            elif self.sicard >= 6000000 and self.sicard <= 6999999:  # tCard, don't have one for testing
+#                self.cardtype = 'SI9'
             elif self.sicard >= 7000000 and self.sicard <= 9999999:
                 self.cardtype = 'SI10'
             else:
