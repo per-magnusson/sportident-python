@@ -721,11 +721,8 @@ class SIReader(object):
         @return : model, a string
         """
         model_id = self.sysval_model_id()
-        if model_id in SIReader.MODEL2NAME:
-            model_str = SIReader.MODEL2NAME[model_id]
-        else:
-            mode_str = "0x%04x" % model_id
-        return model_str
+        model_id_recognized = model_id in SIReader.MODEL2NAME 
+        return SIReader.MODEL2NAME[model_id] if model_id_recognized else "0x%04x" % model_id
 
     def sysval_build_date(self):
         """Return the station build date from the most recent reading of SYS_VAL.
