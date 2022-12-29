@@ -35,6 +35,11 @@ For `macOS` users extra driver for SI station readout is necessary.
 [silabs.com CP210x USB to UART Bridge](https://www.silabs.com/products/development-tools/software/usb-to-uart-bridge-vcp-drivers)
 was used.
 
+On Linux, make sure that the module `cp210x` is loaded:
+```
+modprobe cp210x
+```
+
 ```
 # create virtual environment
 python3 -m venv env
