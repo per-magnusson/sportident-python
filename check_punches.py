@@ -31,17 +31,120 @@ import os
 import time
 from stat import *
 
-
-# Read tsv file with cards to check into list of lists "check_list"
+CODE_FILE_NAME = 'check.tsv'
+# Cards to be checked will be read into check_list
 check_list = []
 controls = set()
-with open('check.tsv', newline='') as tsvfile:
-    list_reader = csv.reader(tsvfile, delimiter='\t')
-    for row in list_reader:
-        si_card = row[0]
-        control = int(row[1])
-        controls.add(control)
-        check_list.append([si_card, control])
+
+def delete_tsv_file(delete=True):
+    if delete:
+        try:
+            os.remove(CODE_FILE_NAME)
+        except Exception:
+            print("Unknown error when deleting file")
+
+def print_menu():
+    print("** Current contents of %s **" % CODE_FILE_NAME)
+    print("Enter SI-card and control number separated by space")
+    print("When done, press enter to continue to log file check")
+    print("To delete an entry, enter the entry index")
+    print("Enter 'q' to quit")
+
+def append_tsv_file():
+    done_writing_file = False
+    while not done_writing_file:
+        try:
+            with open(CODE_FILE_NAME, newline='') as tsvfile:
+                temp_card_list = []
+                list_reader = csv.reader(tsvfile, delimiter='\t')
+                for row in list_reader:
+                    temp_card_list.append([row[0], row[1]])
+                # Print out current list of cards and controls
+                print_menu()
+                if len(temp_card_list) == 0:
+                    print("Empty file %s" % CODE_FILE_NAME)
+                else:
+                    print("Index\tSI-Card\tControl")
+                    for index, line in enumerate(temp_card_list):
+                        print(str(index) + '\t' + line[0] + '\t' + line[1])
+        except FileNotFoundError:
+            # No file created yet, just print out instrutions on how to build the file
+            print_menu()
+            print("Empty file %s" % CODE_FILE_NAME)
+        cmd = input("\"SI-card\" \"Control\": ")
+        # Quit
+        if cmd == 'q':
+            exit()
+        # Continue, finished editing tsv file
+        elif cmd == '':
+            done_writing_file = True
+            continue
+        split_cmd = cmd.split(' ')
+        # Add entry to tsv file
+        if len(split_cmd) == 2:
+            with open(CODE_FILE_NAME, 'a', newline='') as tsvfile:
+                tsvfile.write(split_cmd[0] + '\t' + split_cmd[1] + '\n')
+            continue
+        # Delete entry in tsv file
+        elif len(split_cmd) == 1:
+            if split_cmd[0].isdigit():
+                # Traverse the lines in the file, delete the input line number
+                with open(CODE_FILE_NAME, 'r') as filedata:
+                    # Read the file lines using readlines()
+                    inputFilelines = filedata.readlines()
+                    currentlineindex = 0
+                    # Enter the line number to be deleted
+                    deleteLine = int(split_cmd[0])
+                    # Opening the given file in write mode.
+                    with open(CODE_FILE_NAME, 'w') as filedata:
+                        # Traverse in each line of the file
+                        for textline in inputFilelines:
+                            if currentlineindex != deleteLine:
+                                # Write the corresponding line into file
+                                filedata.write(textline)
+                            # Increase the value of line index(line number) value by 1
+                            currentlineindex += 1
+            else:
+                print(split_cmd, "is not a digit")
+        else:
+            print("Error: Could not parse input", split_cmd)
+        
+
+def check_and_read_tsv_file():
+    # Try reading tsv file with cards to check into list of lists "check_list"
+    try:
+        with open(CODE_FILE_NAME, newline='') as tsvfile:
+            list_reader = csv.reader(tsvfile, delimiter='\t')
+            for row in list_reader:
+                si_card = row[0]
+                control = int(row[1])
+                controls.add(control)
+                check_list.append([si_card, control])
+    except FileNotFoundError:
+        print("Error: File not found")
+        print("Start building new tsv file? y/n")
+        input_char = input()
+        if input_char != 'y':
+            exit()
+    except IndexError:
+        print("IndexError when reading tsv file, is every line properly formatted?")
+        print("Delete file and start building new tsv file? y/n")
+        input_char = input()
+        if input_char == 'y':
+            delete_tsv_file()
+    except Exception:
+        print("Unknown error when reading tsv file")
+        exit()
+
+# First make sure the selected tsv file exists and is properly formatted
+check_and_read_tsv_file()
+# Next, prompt the user to add more cards and missing controls
+append_tsv_file()
+# Update the correct variables again now that the file has possibly been modified
+check_and_read_tsv_file()
+
+# Done creating input list, now start checking the read backup data
+print("***** Start checking backup log data *****")
 
 # Read all the .csv files in the same directory. 
 # Sort on creation time, oldest first.
@@ -78,6 +181,9 @@ if len(controls) > 0:
     print("Missing logs from the following controls:")
     for code in sorted(controls):
         print(code)
+
+
+print("***** Script finished *****")
         
 
 
