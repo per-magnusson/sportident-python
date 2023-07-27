@@ -46,8 +46,9 @@ def delete_tsv_file(delete=True):
 def print_menu():
     print("** Current contents of %s **" % CODE_FILE_NAME)
     print("Enter SI-card and control number separated by space")
-    print("When done, press enter to continue to log file check")
-    print("To delete an entry, enter the entry index")
+    print("Press enter to continue to log file check")
+    print("Enter an index to delete the corresponding entry in the table")
+    print("Enter 'p' to print a sorted list of all controls")
     print("Enter 'q' to quit")
 
 def append_tsv_file():
@@ -79,6 +80,18 @@ def append_tsv_file():
         elif cmd == '':
             done_writing_file = True
             continue
+        # Print sorted list of all controls
+        elif cmd == 'p':
+            print("** All controls sorted by control code **")
+            with open(CODE_FILE_NAME, newline='') as tsvfile:
+                temp_control_list = []
+                list_reader = csv.reader(tsvfile, delimiter='\t')
+                for row in list_reader:
+                    temp_control_list.append(int(row[1]))
+                sort_temp_control_list = sorted(temp_control_list)
+                for control in sort_temp_control_list:
+                    print(control)
+            exit()
         split_cmd = cmd.split(' ')
         # Add entry to tsv file
         if len(split_cmd) == 2:
