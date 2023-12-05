@@ -4,6 +4,7 @@
 #                       2014  Simon Harston <simon@harston.de>
 #                       2015  Jan Vorwerk <jan.vorwerk@angexis.com>
 #                       2019  Per Magnusson <per.magnusson@gmail.com>
+#                       2023  Per Magnusson <per.magnusson@gmail.com>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -304,12 +305,16 @@ class SIReader(object):
                                  'CN1': 4,   # card number byte 1
                                  'CN0': 5,   # card number byte 0
                                  'STD': None,# start time day
+                                 'SN' : None,# start number
                                  'ST' : 19,  # start time
                                  'FTD': None,# finish time day
+                                 'FN' : None,# finish number
                                  'FT' : 21,  # finish time
                                  'CTD': None,# check time day
+                                 'CHN': None,# check number
                                  'CT' : 25,  # check time
                                  'LTD': None,# clear time day
+                                 'LN' : None,# clear number
                                  'LT' : None,# clear time
                                  'RC' : 23,  # punch counter
                                  'P1' : 32,  # first punch
@@ -324,12 +329,16 @@ class SIReader(object):
                                  'CN1': 12,
                                  'CN0': 13,
                                  'STD': 24,
+                                 'SN' : 25,
                                  'ST' : 26,
                                  'FTD': 20,
+                                 'FN' : 21,
                                  'FT' : 22,
                                  'CTD': 28,
+                                 'CHN': 29,
                                  'CT' : 30,
                                  'LTD': 32,
+                                 'LN' : 33,
                                  'LT' : 34,
                                  'RC' : 18,
                                  'P1' : 128,
@@ -344,12 +353,16 @@ class SIReader(object):
                                  'CN1': 26,
                                  'CN0': 27,
                                  'STD': 12,
+                                 'SN' : 13,
                                  'ST' : 14,
                                  'FTD': 16,
+                                 'FN' : 17,
                                  'FT' : 18,
                                  'CTD': 8,
+                                 'CHN': 9,
                                  'CT' : 10,
                                  'LTD': None,
+                                 'LN' : None,
                                  'LT' : None,
                                  'RC' : 22,
                                  'P1' : 136,
@@ -365,60 +378,72 @@ class SIReader(object):
                                  'CN1': 26,
                                  'CN0': 27,
                                  'STD': 12,
+                                 'SN' : 13,
                                  'ST' : 14,
                                  'FTD': 16,
+                                 'FN' : 17,
                                  'FT' : 18,
                                  'CTD': 8,
+                                 'CHN': 9,
                                  'CT' : 10,
                                  'LTD': None,
+                                 'LN' : None,
                                  'LT' : None,
                                  'RC' : 22,
                                  'P1' : 56,
                                  'PL' : 4,
                                  'PM' : 50,
-                                 'PTD': 0, # Day of week byte, SI6 and newer
+                                 'PTD': 0,
                                  'CN' : 1,
                                  'PTH': 2,
                                  'PTL': 3,
                                  'BC' : 2,
                              },
                           'pCard':{'CN2': 25,     # Similar to SI9/10 but not identical
-                                  'CN1': 26,
-                                  'CN0': 27,
-                                  'STD': 12,
-                                  'ST' : 14,
-                                  'FTD': 16,
-                                  'FT' : 18,
-                                  'CTD': 8,
-                                  'CT' : 10,
-                                  'LTD': None,
-                                  'LT' : None,
-                                  'RC' : 22,
-                                  'P1' : 176, # Location of Punch 1 I believe
-                                  'PL' : 4,
-                                  'PM' : 20,
-                                  'PTD': 0, # Day of week byte, SI6 and newer
-                                  'CN' : 1,
-                                  'PTH': 2,
-                                  'PTL': 3,
-                                  'BC' : 2,
+                                   'CN1': 26,
+                                   'CN0': 27,
+                                   'STD': 12,
+                                   'SN' : 13,
+                                   'ST' : 14,
+                                   'FTD': 16,
+                                   'FN' : 17,
+                                   'FT' : 18,
+                                   'CTD': 8,
+                                   'CHN': 9,
+                                   'CT' : 10,
+                                   'LTD': None,
+                                   'LN' : None,
+                                   'LT' : None,
+                                   'RC' : 22,
+                                   'P1' : 176, # Location of Punch 1 I believe
+                                   'PL' : 4,
+                                   'PM' : 20,
+                                   'PTD': 0,
+                                   'CN' : 1,
+                                   'PTH': 2,
+                                   'PTL': 3,
+                                   'BC' : 2,
                               },
                           'SI10':{'CN2': 25,     # Same data structure for SI11
                                   'CN1': 26,
                                   'CN0': 27,
                                   'STD': 12,
+                                  'SN' : 13,
                                   'ST' : 14,
                                   'FTD': 16,
+                                  'FN' : 17,
                                   'FT' : 18,
                                   'CTD': 8,
+                                  'CHN': 9,
                                   'CT' : 10,
                                   'LTD': None,
+                                  'LN' : None,
                                   'LT' : None,
                                   'RC' : 22,
                                   'P1' : 128, # would be 512 if all blocks were read, but blocks 1-3 are skipped on readout
                                   'PL' : 4,
                                   'PM' : 64,
-                                  'PTD': 0, # Day of week byte, SI6 and newer
+                                  'PTD': 0,
                                   'CN' : 1,
                                   'PTH': 2,
                                   'PTL': 3,
@@ -1449,7 +1474,19 @@ class SIReader(object):
                 return ref_day + punchtime
 
     @staticmethod
-    def _append_punch(list, station,  timedata, ptd, reftime):
+    def _decode_station_code(raw_code, raw_ptd = None):
+        """Decodes the station code read from an si card.
+        For cards newer than SI5, there are possibly two extra bits in the ptd byte,
+        allowing codes up to 1023 (although in practice these are rarely used by 
+        organizers as it would preclude the use of SI5 cards)."""
+        if raw_ptd is not None:
+            return ((raw_ptd & 0xc0) << 2) + raw_code
+        else:
+            return raw_code
+
+
+    @staticmethod
+    def _append_punch(list, station, timedata, ptd, reftime):
         time = SIReader._decode_time(timedata, ptd, reftime)
         if time is not None:
             list.append((station, time))
@@ -1468,21 +1505,29 @@ class SIReader(object):
                                                      + data[card['CN1']:card['CN1']+1]
                                                      + data[card['CN0']:card['CN0']+1])
 
-        ret['start'] = SIReader._decode_time(data[card['ST']:card['ST']+2],
-                                             data[card['STD']] if card['STD'] else None,
-                                             reftime)
-        ret['finish'] = SIReader._decode_time(data[card['FT']:card['FT']+2],
-                                              data[card['FTD']] if card['FTD'] is not None else None,
-                                             reftime)
-        ret['check'] = SIReader._decode_time(data[card['CT']:card['CT']+2],
-                                             data[card['CTD']] if card['CTD'] is not None else None,
-                                             reftime)
+        time_day = data[card['STD']] if card['STD'] else None
+        code = data[card['SN']] if card['SN'] is not None else None
+        ret['start'] = SIReader._decode_time(data[card['ST']:card['ST']+2], time_day, reftime)
+        ret['start_code'] = SIReader._decode_station_code(code, time_day)
+
+        time_day = data[card['FTD']] if card['FTD'] else None
+        code = data[card['FN']] if card['FN'] is not None else None
+        ret['finish'] = SIReader._decode_time(data[card['FT']:card['FT']+2], time_day, reftime)
+        ret['finish_code'] = SIReader._decode_station_code(code, time_day)
+
+        time_day = data[card['CTD']] if card['CTD'] else None
+        code = data[card['CHN']] if card['CHN'] is not None else None
+        ret['check'] = SIReader._decode_time(data[card['CT']:card['CT']+2], time_day, reftime)
+        ret['check_code'] = SIReader._decode_station_code(code, time_day)
+
         if card['LT'] is not None:
-            ret['clear'] = SIReader._decode_time(data[card['LT']:card['LT']+2],
-                                                 data[card['LTD']] if card['LTD'] is not None else None,
-                                                 reftime)
+            time_day = data[card['LTD']] if card['LTD'] else None
+            code = data[card['LN']] if card['LN'] is not None else None
+            ret['clear'] = SIReader._decode_time(data[card['LT']:card['LT']+2], time_day, reftime)
+            ret['clear_code'] = SIReader._decode_station_code(code, time_day)
         else:
             ret['clear'] = None # SI 5 and 9 cards don't store the clear time
+            ret['clear_code'] = None
 
         punch_count = byte2int(data[card['RC']:card['RC']+1])
         if card_type == 'SI5':
@@ -1501,7 +1546,7 @@ class SIReader(object):
                 i += 1
 
             ptd = data[i + card['PTD']] if card['PTD'] is not None else None
-            cn  = byte2int(data[i + card['CN']])
+            cn  = SIReader._decode_station_code(byte2int(data[i + card['CN']]), time_day)
             pt  = data[i + card['PTH']:i + card['PTL']+1]
 
             SIReader._append_punch(ret['punches'], cn, pt, ptd, reftime)
